@@ -1,13 +1,13 @@
 (defun my-sort (sorted lst key test)
   (if lst
-      (my-sort (merge 'list sorted (list (funcall key (car lst))) test) (cdr lst) key test)
+      (my-sort (merge 'list sorted (list (car lst)) test :key key) (cdr lst) key test)
       sorted))
 
 (defun sort-start (lst &key (key #'identity) (test #'<))
   (when lst
-    (my-sort (list (funcall key (car lst))) (cdr lst) key test)))
+    (my-sort (list (car lst)) (cdr lst) key test)))
 
-(defun rpropagation-reducer (&key (comparator #'<))
+(defun rpropagation-reducer (&key (comparator #'<))    ;ключові параметри reduce з використанням цієї функції: :from-end t :initial-value nil
   (let ((best nil))  
     (lambda (left right)
       (if (null right)
@@ -24,9 +24,9 @@
     (format t "~:[FAILED~;passed~]... ~a~%" (equal result expected) name)))
 
 (defun test1 ()
-  (check-function "Test1" 'sort-start '(1 2 3 4 5) '(4 3 5 1 2))
-  (check-function "Test2" 'sort-start '(1 2 3 4) '(3 2 1 0) :key #'1+)
-  (check-function "Test3" 'sort-start '(4 3 2 1) '(0 1 2 3) :key #'1+ :test #'>))
+  (check-function "Test1" 'sort-start '(-3 -1 0 2) '(-3 2 -1 0))
+  (check-function "Test2" 'sort-start '(0 -1 2 -3) '(-3 2 -1 0) :key #'abs)
+  (check-function "Test3" 'sort-start '(-3 2 -1 0) '(0 -1 2 -3) :key #'abs :test #'>))
 
 
 (defun test2 ()
